@@ -1,0 +1,39 @@
+FROM python:3.6.2-alpine3.6
+MAINTAINER xgrzsza <grzegorz.szadkowski@gmail.com>
+LABEL Description="Mind map DB connector and Tree Finder base"
+
+ENV PACKAGES=" \
+        bash \
+        curl \
+        dcron \
+        gcc \
+        g++ \
+        make \
+        python3-dev \
+        tar \
+    " \
+    PIP_PACKAGES_TO_UPGRADE="\
+        setuptools \
+        pip \
+    " \
+    PIP_PACKAGES_TO_INSTALL="\
+        virtualenv \
+    "
+
+ADD files/requirements.txt /tmp/requirements.txt
+
+RUN apk update \
+    && apk add --no-cache $PACKAGES \
+    && if [ ! -e /usr/bin/pip ]; then ln -s /usr/bin/pip3 /usr/bin/pip ; fi \
+    && pip install --upgrade $PIP_PACKAGES_TO_UPGRADE \
+    && pip install $PIP_PACKAGES_TO_INSTALL \
+    && mkdir \
+        /logs \
+        /virtual_env \
+        /workspace \
+    && chmod a+x \
+        /virtual_env \
+    && virtualenv --python=python3.6 /virtual_env \
+    && source /virtual_env/bin/activate \
+    && pip install -r /tmp/requirements.txt \
+    && rm /tmp/requirements.txt

@@ -1,0 +1,8 @@
+#!/bin/bash
+run-parts runs all files in the directory /etc/periodic/... matching regexp (^[a-zA-Z0-9_-]+$). So no ".sh"
+
+# -type f - files only
+# -mindepth 1
+# -mtime +30 - number of days to keep
+# -delete for deleting the filtered files
+find /logs -type f -mindepth 1 -mtime +30 -delete
